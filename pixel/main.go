@@ -5,6 +5,8 @@ package main
 import (
 	"image"
 	"os"
+	_"math" 
+	"time" 
 	_ "image/png" 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
@@ -12,7 +14,7 @@ import (
 )
 
 const (
-	Title string = "Hello Pixel";
+	Title string = "Dummy Witch - Is She Cute ?";  
 	Width float64 = 800;
 	Height float64 = 600;  
 )
@@ -44,17 +46,41 @@ func run() {
 		panic(err); 
 	}
 
-	pic, err := loadPicture("./assets/img/witch.png");  
+	witchPic, err := loadPicture("./assets/img/witch.png");  
 	if err != nil {
 		panic(err); 
 	}
 
-	sprite := pixel.NewSprite(pic, pic.Bounds()); 
+	witchSprite := pixel.NewSprite(witchPic, witchPic.Bounds()); 
 
-	window.Clear(colornames.Coral); 
-	sprite.Draw(window, pixel.IM.Moved(window.Bounds().Center()));   
-
+	
+	// Sprite Management. 
+	
+	angle := 0.0;
+	lastTime := time.Now(); 
+	
+	// Put all transform in the loop to make the animation. 
 	for !window.Closed() {
+		// Delta Time. 
+		deltaTime := time.Since(lastTime).Seconds();
+		lastTime = time.Now(); 
+		
+		// Clear Window every loop. 
+		window.Clear(colornames.Lightblue);  
+		
+		// Assign Sprite and Center Alignment. 
+		witch := pixel.IM;  
+		centerAlign := window.Bounds().Center(); 
+
+		// Framerate. 
+		angle += deltaTime * 2;   
+
+		// 2D Transformation. 
+		witch = witch.Rotated(pixel.ZV, angle);     
+		// witch = witch.Scaled(pixel.ZV, 3);     
+		witch = witch.Moved(centerAlign);  
+		witchSprite.Draw(window, witch);    
+
 		window.Update(); 
 	}
 }
